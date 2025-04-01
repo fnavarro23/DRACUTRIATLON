@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DracuTriatlon </title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="Icon" type="png" href="descarga.png">
+
+</head>
+<body>
+    <header class="hero">
+        <nav>
+            <div class="marcas">
+                <img src="descarga.png" alt="">
+                <img src ="descarga1.png" alt="">
+                <img src ="descarga2.png" alt="">
+            </div>
+
+            <div class="logo">DRACU<span>TRIATLÓN</span>
+        </nav>
+        <div class="hero-content">
+            <h1>DESAFÍA TUS LÍMITES EN ESTE EVENTO</h1>
+            <p>10K Caminata | 10K Natación | 30K Ciclismo</p>
+            <a href="#registration" class="cta-button">REGÍSTRATE AHORA</a>
+        </div>
+    </header>
+
+    <main>
+        <section class="live-results">
+            <div class="section-header">
+                <h2>RESULTADOS EN TIEMPO REAL</h2>
+                <div class="timer" id="timer">
+                    <i class="fas fa-clock"></i> <span>08:00:00</span>
+                </div>
+            </div>
+            
+            <div class="controls">
+                <button id="random-participants" class="outline-button">
+                    <i class="fas fa-random"></i> Generar Competidores
+                </button>
+                <div class="speed-controls">
+                    <select id="speed-mode">
+                        <option value="normal">Velocidad Normal</option>
+                        <option value="rapid">Velocidad Rápida</option>
+                    </select>
+                    <button id="start-event" class="action-button">
+                        <i class="fas fa-play"></i> Iniciar Evento
+                    </button>
+                    <button id="reset-event" class="outline-button">
+                        <i class="fas fa-redo"></i> Reiniciar
+                    </button>
+                </div>
+            </div>
+
+            <div class="results-table-container">
+                <table id="results-table">
+                    <thead>
+                        <tr>
+                            <th>POS</th>
+                            <th>COMPETIDOR</th>
+                            <th>EDAD</th>
+                            <th>CIUDAD</th>
+                            <th>CAMINATA</th>
+                            <th>NATACIÓN</th>
+                            <th>CICLISMO</th>
+                            <th>ESTADO</th>
+                        </tr>
+                    </thead>
+                    <tbody id="results-body">
+                        <!-- Datos se insertarán aquí -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="registration" class="registration-section">
+            <div class="form-container">
+                <h2>REGISTRO DE PARTICIPANTES</h2>
+                <form id="registration-form">
+                    <div class="form-group">
+                        <label for="cedula">Documento de Identidad</label>
+                        <input type="text" id="cedula" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="nombre">Nombre Completo</label>
+                        <input type="text" id="nombre" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="municipio">Ciudad</label>
+                            <input type="text" id="municipio" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="edad">Edad</label>
+                            <input type="number" id="edad" min="18" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="start-time">Hora de Inicio (HH:MM:SS)</label>
+                        <input type="text" id="start-time" value="08:00:00" required>
+                    </div>
+                    <button type="submit" class="submit-button">
+                        <i class="fas fa-user-plus"></i> Registrar Participante
+                    </button>
+                </form>
+            </div>
+            <div class="info-container">
+                <h3>DETALLES DEL EVENTO</h3>
+                <div class="discipline-card">
+                    <div class="icon"><i class="fas fa-walking"></i></div>
+                    <h4>Caminata 10K</h4>
+                    <p>Velocidad promedio: 7 km/h</p>
+                </div>
+                <div class="discipline-card">
+                    <div class="icon"><i class="fas fa-swimming-pool"></i></div>
+                    <h4>Natación 10K</h4>
+                    <p>Velocidad promedio: 1.72 m/s</p>
+                </div>
+                <div class="discipline-card">
+                    <div class="icon"><i class="fas fa-bicycle"></i></div>
+                    <h4>Ciclismo 30K</h4>
+                    <p>Velocidad promedio: 45 km/h</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">DRACU<span>TRIATLÓN</span></div>
+            <p>© 2025 DRACUTRIATLON. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
