@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
+
     // Elementos del DOM
     const registrationForm = document.getElementById('registration-form');
     const startEventBtn = document.getElementById('start-event');
@@ -8,7 +9,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const timerDisplay = document.getElementById('timer');
     const startTimeInput = document.getElementById('start-time');
     const speedModeSelect = document.getElementById('speed-mode');
-
+    const inicioEL = document.getElementById('iniciar');
+     // Actualiza el campo de hora cada segundo
+    
     // Estado del evento
     let participants = [];
     let eventStarted = false;
@@ -94,6 +97,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (eventStarted) return;
         
         const startTime = startTimeInput.value;
+        console.log(startTime);
         if (!isValidTime(startTime)) {
             alert('Por favor ingresa una hora válida en formato HH:MM:SS');
             return;
@@ -111,6 +115,10 @@ document.addEventListener('DOMContentLoaded', function() {
         eventStarted = true;
         currentTime = startTime;
         timerDisplay.textContent = `⏱️ Hora: ${currentTime}`;
+
+        // Actuallizar tabla con participantes activos
+
+        getCheckedParticipants();
         
         // Establecer hora de inicio para todos los participantes
         participants.forEach(participant => {
@@ -121,6 +129,36 @@ document.addEventListener('DOMContentLoaded', function() {
         eventInterval = setInterval(updateEvent, simulationSpeed);
         startEventBtn.disabled = true;
     });
+    inicioEL.addEventListener('click', function() {
+        const checkbox = document.getElementById('chack_participantes');
+        let check = "";
+        console.log(participants);
+        participants.forEach((participant, index) => {
+            check += `
+            <div class="form-check" style="margin-left: 20px;font-weight: 600;">
+                <input class="form-check-input my-1" type="checkbox" value="${index}" id="participant-${index}">
+                <label class="form-check-label" for="participant-${index}">
+                    ${participant.nombre} - ${participant.cedula}
+                </label>
+            </div>
+            `;
+        });
+        checkbox.innerHTML = check;
+    });
+
+    function getCheckedParticipants() {
+        const checkboxes = document.querySelectorAll('.form-check-input');
+        const checkedParticipants = [];
+        checkboxes.forEach(checkbox => {
+            if (checkbox.checked) {
+                const participantIndex = parseInt(checkbox.value, 10);
+                checkedParticipants.push(participants[participantIndex]);
+            }
+        });
+        participants = checkedParticipants;
+        updateResultsTable();
+    }
+
 
     // Reiniciar evento
     resetEventBtn.addEventListener('click', function() {
@@ -133,75 +171,100 @@ document.addEventListener('DOMContentLoaded', function() {
         updateResultsTable();
         startEventBtn.disabled = false;
     });
+    
 
     // Actualizar estado del evento
-    function updateEvent() {
-        // Actualizar hora actual
-        currentTime = addOneSecond(currentTime);
-        timerDisplay.textContent = `⏱️ Hora: ${currentTime}`;
+    // Actualizar estado del evento
+function updateEvent() {
+    // Actualizar hora actual
+    console.log("hola");
+    currentTime = addOneSecond(currentTime); // Incrementa el tiempo simulado en 1 segundo
+    timerDisplay.textContent = `⏱️ Hora: ${currentTime}`; // Actualiza el reloj en pantalla
+    
+    // Actualizar progreso de cada participante
+    participants.forEach(participant => {
+        if (participant.disqualified) return; // Si el participante está descalificado, no se actualiza
         
-        // Actualizar progreso de cada participante
-        participants.forEach(participant => {
-            if (participant.disqualified) return;
-            
-            // Caminata (10K)
-            if (!participant.walking.completed) {
-                updateDiscipline(participant, 'walking', 10, walkingSpeed);
-            } 
-            // Natación (10K) - comienza cuando termina la caminata
-            else if (!participant.swimming.completed && participant.walking.completed) {
-                if (!participant.swimming.startTime) {
-                    participant.swimming.startTime = participant.walking.endTime;
-                }
-                updateDiscipline(participant, 'swimming', 10, swimmingSpeed * 3.6); // Convertir m/s a km/h
-            } 
-            // Ciclismo (30K) - comienza cuando termina la natación
-            else if (!participant.cycling.completed && participant.swimming.completed) {
-                if (!participant.cycling.startTime) {
-                    participant.cycling.startTime = participant.swimming.endTime;
-                }
-                updateDiscipline(participant, 'cycling', 30, cyclingSpeed);
+        // Caminata (10K)
+        if (!participant.walking.completed) {
+            updateDiscipline(participant, 'walking', 10000, walkingSpeed); // Actualiza el progreso en la caminata
+        } 
+        // Natación (10K) - comienza cuando termina la caminata
+        else if (!participant.swimming.completed && participant.walking.completed) {
+            if (!participant.swimming.startTime) {
+                participant.swimming.startTime = participant.walking.endTime; // Registra la hora de inicio de la natación
             }
-        });
-        
-        updateResultsTable();
-        
-        // Verificar si todos los participantes han terminado o están descalificados
-        const eventFinished = participants.every(p => 
-            p.cycling.completed || p.disqualified
-        );
-        
-        if (eventFinished) {
-            clearInterval(eventInterval);
-            alert('¡El triatlón ha terminado! 🎉');
+            updateDiscipline(participant, 'swimming', 10000, swimmingSpeed * 3.6); // Actualiza el progreso en la natación (convertido a km/h)
+        } 
+        // Ciclismo (30K) - comienza cuando termina la natación
+        else if (!participant.cycling.completed && participant.swimming.completed) {
+            if (!participant.cycling.startTime) {
+                participant.cycling.startTime = participant.swimming.endTime; // Registra la hora de inicio del ciclismo
+            }
+            updateDiscipline(participant, 'cycling', 30000, cyclingSpeed); // Actualiza el progreso en el ciclismo
         }
-    }
+    });
+    
+    updateResultsTable(); // Actualiza la tabla de resultados en pantalla
+    
+    // Verificar si todos los participantes han terminado o están descalificados
+    const eventFinished = participants.every(p => 
+        p.cycling.completed || p.disqualified // Verifica si todos han completado o están descalificados
+    );
+    
+    if (eventFinished) {
+        clearInterval(eventInterval); // Detiene la simulación
 
-    // Actualizar una disciplina específica
-    function updateDiscipline(participant, discipline, maxDistance, speed) {
-        // Calcular distancia máxima que puede recorrer en 1 segundo (en km)
-        const maxDistancePerSecond = speed / 3600;
-        
-        // Distancia aleatoria recorrida este segundo (0 a máximo posible)
-        const distanceThisSecond = Math.random() * maxDistancePerSecond;
-        
-        // Verificar descalificación (menos de 1 metro)
-        if (distanceThisSecond < 0.001) {
-            participant.disqualified = true;
-            participant.reason = `Descalificado en ${discipline} (distancia muy baja)`;
-            return;
-        }
-        
-        // Actualizar distancia
-        participant[discipline].distance += distanceThisSecond;
-        
-        // Verificar si completó la disciplina
-        if (participant[discipline].distance >= maxDistance) {
-            participant[discipline].completed = true;
-            participant[discipline].endTime = currentTime;
-            participant[discipline].distance = maxDistance; // Ajustar al máximo
-        }
+        // Cambiar color de las tres primeras filas a rojo
+        const rows = resultsBody.querySelectorAll('tr');
+        rows.forEach((row, index) => {
+            if (index < 3){
+
+                row.style.color= 'white'; 
+            }
+            switch (index) {
+                case 0:
+                    // Cambia el color del texto a blanco
+                    row.style.backgroundColor = '#F0E68C'; // Primer lugar
+                    break;
+                case 1:
+                    row.style.backgroundColor = '#D3D3D3'; // Segundo lugar
+                    break;
+                case 2:
+                    row.style.backgroundColor = '#D2691E'; // Tercer lugar
+                    break;
+            }  
+        });
+
+        alert('¡El triatlón ha terminado! 🎉'); // Muestra un mensaje de finalización
     }
+}
+
+// Actualizar una disciplina específica
+function updateDiscipline(participant, discipline, maxDistance, speed) {
+    // Calcular distancia máxima que puede recorrer en 1 segundo (en km)
+    const maxDistancePerSecond = (speed*1000) / 3600; // Velocidad está en km/h, se convierte a km/s
+    
+    // Distancia aleatoria recorrida este segundo (0 a máximo posible)
+    const distanceThisSecond = Math.random() * maxDistancePerSecond; // Ensure minimum distance is 1 meter
+    
+    // Verificar descalificación (menos de 1 metro)
+    if (distanceThisSecond < 0.001) { // This condition is now redundant but kept for clarity
+        participant.disqualified = true; // Marca al participante como descalificado
+        participant.reason = `Descalificado en ${discipline} (distancia muy baja)`; // Razón de descalificación
+        return;
+    }
+    console.log(distanceThisSecond);
+    // Actualizar distancia
+    participant[discipline].distance += distanceThisSecond; // Incrementa la distancia recorrida
+
+    // Verificar si completó la disciplina
+    if (participant[discipline].distance >= maxDistance / 1000) { // maxDistance está en metros, se convierte a km
+        participant[discipline].completed = true; // Marca la disciplina como completada
+        participant[discipline].endTime = currentTime; // Registra la hora de finalización
+        participant[discipline].distance = maxDistance / 1000; // Ajusta la distancia al máximo permitido en km
+    }
+}
 
     // Actualizar tabla de resultados
     function updateResultsTable() {
@@ -249,7 +312,6 @@ document.addEventListener('DOMContentLoaded', function() {
         let html = '';
         sortedParticipants.forEach((participant, index) => {
             const position = index + 1;
-            
             html += `<tr class="${participant.disqualified ? 'disqualified' : ''}">`;
             html += `<td>${participant.disqualified ? '🚫' : position}</td>`;
             html += `<td>${participant.nombre}</td>`;
