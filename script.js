@@ -9,6 +9,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const timerDisplay = document.getElementById('timer');
     const startTimeInput = document.getElementById('start-time');
     const speedModeSelect = document.getElementById('speed-mode');
+    const btnHome = document.querySelectorAll('.bxs-home');
+    const btnVerTabla = document.querySelectorAll('.btnvertabla');
+    const btnRegistro = document.querySelectorAll('.btnregistro');
+    const liveResultsSection = document.querySelector('.live-results');
+    const registrationSection = document.querySelector('#registration');
+    const heroSection = document.querySelector('.hero');
+    
     const inicioEL = document.getElementById('iniciar');
      // Actualiza el campo de hora cada segundo
     
@@ -30,9 +37,10 @@ document.addEventListener('DOMContentLoaded', function() {
     ];
 
     const randomCities = [
-        "Bogotá", "Medellín", "Cali", "Barranquilla", "Cartagena",
-        "Bucaramanga", "Pereira", "Manizales", "Armenia", "Ibagué",
-        "Santa Marta", "Villavicencio", "Pasto", "Montería", "Valledupar"
+        "Caracas", "Maracaibo", "Valencia", "Barquisimeto", "Maracay",
+        "Ciudad Guayana", "Barcelona", "Maturín", "Puerto La Cruz", "San Cristóbal",
+        "Barinas", "Mérida", "Los Teques", "Punto Fijo", "Ciudad Bolívar",
+        "Coro", "Puerto Ordaz", "El Tigre", "Cabimas", "Guarenas"
     ];
 
     // Registrar participante
@@ -60,7 +68,31 @@ document.addEventListener('DOMContentLoaded', function() {
         updateResultsTable();
         registrationForm.reset();
     });
+    //mostrar pagina de registro 
+    function showSection(sectionToShow) {
+        heroSection.style.display = 'none';
+        liveResultsSection.style.display = 'none';
+        registrationSection.style.display = 'none';
 
+        sectionToShow.style.display = 'block'; // Cambiar a flex para centrar el contenido
+    }
+
+    // Eventos de clic para los botones
+    btnHome.forEach(button => {
+        button.addEventListener('click', () => showSection(heroSection));
+    });
+
+    btnVerTabla.forEach(button => {
+        button.addEventListener('click', () => showSection(liveResultsSection));
+    });
+
+    btnRegistro.forEach(button => {
+        button.addEventListener('click', () => {
+            heroSection.style.display = 'none';
+            liveResultsSection.style.display = 'none';
+            registrationSection.style.display = 'flex'; // Cambiar a flex
+        });
+    });
     // Generar participantes aleatorios
     randomParticipantsBtn.addEventListener('click', function() {
         if (eventStarted) {
@@ -109,7 +141,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         // Configurar velocidad de simulación
-        simulationSpeed = speedModeSelect.value === 'rapid' ? 100 : 1000;
+        simulationSpeed = speedModeSelect.value === 'rapid' ? 1 : 1000;
         
         // Inicializar evento
         eventStarted = true;
@@ -131,8 +163,9 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     inicioEL.addEventListener('click', function() {
         const checkbox = document.getElementById('chack_participantes');
-        let check = "";
-        console.log(participants);
+        let check = ``
+
+        
         participants.forEach((participant, index) => {
             check += `
             <div class="form-check" style="margin-left: 20px;font-weight: 600;">
@@ -145,9 +178,15 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         checkbox.innerHTML = check;
     });
+    document.getElementById('participant_todos').addEventListener('change', (e) => {
+        const checkboxes = document.querySelectorAll('.form-check-input:not(#participant_todos)');
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = e.target.checked;
+        });
+    });
 
     function getCheckedParticipants() {
-        const checkboxes = document.querySelectorAll('.form-check-input');
+        const checkboxes = document.querySelectorAll('.form-check-input:not(#participant_todos)');
         const checkedParticipants = [];
         checkboxes.forEach(checkbox => {
             if (checkbox.checked) {
@@ -155,6 +194,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 checkedParticipants.push(participants[participantIndex]);
             }
         });
+        if (checkedParticipants.length === 0) {
+            alert('¡Debes seleccionar al menos un participante!');
+            return;
+        }
         participants = checkedParticipants;
         updateResultsTable();
     }
@@ -243,13 +286,13 @@ function updateEvent() {
 // Actualizar una disciplina específica
 function updateDiscipline(participant, discipline, maxDistance, speed) {
     // Calcular distancia máxima que puede recorrer en 1 segundo (en km)
-    const maxDistancePerSecond = (speed*1000) / 3600; // Velocidad está en km/h, se convierte a km/s
+    const maxDistancePerSecond = (speed*1000) / 3600; // Velocidad está en km/h, se convierte a m/s
     
     // Distancia aleatoria recorrida este segundo (0 a máximo posible)
     const distanceThisSecond = Math.random() * maxDistancePerSecond; // Ensure minimum distance is 1 meter
     
     // Verificar descalificación (menos de 1 metro)
-    if (distanceThisSecond < 0.001) { // This condition is now redundant but kept for clarity
+    if (distanceThisSecond < 0.00001) { // This condition is now redundant but kept for clarity
         participant.disqualified = true; // Marca al participante como descalificado
         participant.reason = `Descalificado en ${discipline} (distancia muy baja)`; // Razón de descalificación
         return;
@@ -259,10 +302,10 @@ function updateDiscipline(participant, discipline, maxDistance, speed) {
     participant[discipline].distance += distanceThisSecond; // Incrementa la distancia recorrida
 
     // Verificar si completó la disciplina
-    if (participant[discipline].distance >= maxDistance / 1000) { // maxDistance está en metros, se convierte a km
+    if (participant[discipline].distance >= maxDistance) { // maxDistance está en metros, se convierte a km
         participant[discipline].completed = true; // Marca la disciplina como completada
         participant[discipline].endTime = currentTime; // Registra la hora de finalización
-        participant[discipline].distance = maxDistance / 1000; // Ajusta la distancia al máximo permitido en km
+        participant[discipline].distance = maxDistance; // Ajusta la distancia al máximo permitido en km
     }
 }
 
@@ -329,7 +372,7 @@ function updateDiscipline(participant, discipline, maxDistance, speed) {
                 } else if (participant.disqualified) {
                     html += `❌ Descalificado`;
                 } else {
-                    html += `🔄 ${(participant.walking.distance / 10 * 100).toFixed(1)}%`;
+                    html += `🔄 ${(participant.walking.distance / 10000 * 100).toFixed(1)}%`;
                 }
             } else {
                 html += `⏳ No iniciado`;
@@ -346,7 +389,7 @@ function updateDiscipline(participant, discipline, maxDistance, speed) {
                 } else if (participant.disqualified) {
                     html += `❌ Descalificado`;
                 } else {
-                    html += `🔄 ${(participant.swimming.distance / 10 * 100).toFixed(1)}%`;
+                    html += `🔄 ${(participant.swimming.distance / 10000 * 100).toFixed(1)}%`;
                 }
             } else if (participant.walking.completed || participant.disqualified) {
                 html += participant.disqualified ? '❌ Descalificado' : '⏳ No iniciado';
@@ -365,7 +408,7 @@ function updateDiscipline(participant, discipline, maxDistance, speed) {
                 } else if (participant.disqualified) {
                     html += `❌ Descalificado`;
                 } else {
-                    html += `🔄 ${(participant.cycling.distance / 30 * 100).toFixed(1)}%`;
+                    html += `🔄 ${(participant.cycling.distance / 30000 * 10000).toFixed(1)}%`;
                 }
             } else if (participant.swimming.completed || participant.disqualified) {
                 html += participant.disqualified ? '❌ Descalificado' : '⏳ No iniciado';

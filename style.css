@@ -27,7 +27,7 @@ body {
 .hero {
     background: linear-gradient(rgba(109, 103, 103, 0.7), rgba(0, 0, 0, 0.7)), 
                 url('https://fundadeporte.gob.ve/carabobo/wp-content/uploads/2022/03/Dracufest2022.jpg') no-repeat center center/cover;
-    height: 80vh;
+    height: 100vh;
     color: rgb(255, 255, 255);
     display: flex;
     flex-direction: column;
@@ -254,6 +254,74 @@ tr:hover {
 }
 
 /* Sección de registro */
+/* Sección de registro */
+.registration-section {
+    height: 100vh; /* Ocupa toda la altura de la pantalla */
+    display: flex;
+    justify-content: center; /* Centra el contenido verticalmente */
+    align-items: center; /* Centra el contenido horizontalmente */
+    gap: 1.5rem; /* Espaciado entre elementos */
+    background-color: #f1f1f1;
+    padding: 2rem; /* Reduce el padding para evitar desbordamiento */
+    overflow: hidden; /* Oculta cualquier contenido que se desborde */
+}
+
+.form-container {
+    flex: 1 1 100%; /* Ocupa el 100% del ancho disponible */
+    max-width: 600px; /* Limita el ancho máximo */
+    background-color: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+.botones:first-of-type {
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+
+
+
+.botones button {
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    padding: 1rem 1.5rem;
+    border-radius: 50px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+}
+
+.botones button:hover {
+    background-color: #df565d;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.botones button i {
+    font-size: 1.5rem;
+    margin-right: 0.5rem;
+}
+
+.botones button i:last-child {
+    margin-right: 0;
+}
+
+
+
+.info-container {
+    flex: 1 1 100%; /* Ocupa el 100% del ancho disponible */
+    max-width: 400px; /* Limita el ancho máximo */
+    text-align: center;
+}
 .registration-section {
     padding: 4rem 5%;
     display: flex;
@@ -314,7 +382,7 @@ tr:hover {
     font-weight: bold;
     cursor: pointer;
     width: 100%;
-    margin-top: 1rem;
+    
     transition: all 0.3s;
     display: flex;
     justify-content: center;

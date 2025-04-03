@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="Icon" type="png" href="descarga.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    
 
 </head>
 <body>
@@ -24,12 +26,31 @@
         <div class="hero-content">
             <h1>DESAFÍA TUS LÍMITES EN ESTE EVENTO</h1>
             <p>10K Caminata | 10K Natación | 30K Ciclismo</p>
-            <a href="#registration" class="cta-button">REGÍSTRATE AHORA</a>
+            <div style="display: flex; gap: 20px; margin-top: 20px;">
+
+                <a class="cta-button btnregistro">REGÍSTRATE AHORA</a>
+                <a class="cta-button btnvertabla" >Ver tabla</a>
+            </div>
         </div>
     </header>
 
     <main>
-        <section class="live-results">
+        <section class="live-results"  style="display: none;">
+            <div class="botones">
+                
+                <button>                  
+                    <i class='bx bxs-home' style="cursor: pointer;"></i>
+                </button>
+                <button class="btnvertabla">
+                    
+                    <i class='bx bx-table ' style="cursor: pointer;"></i>
+                </button>
+                <button class="btnregistro">
+                    
+                    <i class='bx bxs-edit ' style="cursor: pointer;"></i>
+                </button>
+            </div>
+            
             <div class="section-header">
                 <h2>RESULTADOS EN TIEMPO REAL</h2>
                 <div class="timer" id="timer">
@@ -77,7 +98,20 @@
             </div>
         </section>
 
-        <section id="registration" class="registration-section">
+        <section id="registration" class="registration-section" style="display: none;">
+            <div class="botones">
+                
+                <button>
+                    <i class='bx bxs-home' ></i>
+                </button>
+                <button>
+                    <i class='bx bx-table btnvertabla'></i>
+                </button>
+                <button>
+                    
+                    <i class='bx bxs-edit btnregistro'></i>
+                </button>
+            </div>
             <div class="form-container">
                 <h2>REGISTRO DE PARTICIPANTES</h2>
                 <form id="registration-form">
@@ -99,10 +133,7 @@
                             <input type="number" id="edad" min="18" required>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label for="start-time">Hora de Inicio (HH:MM:SS)</label>
-                        <input type="text" id="start-time" value="08:00:00" required>
-                    </div>
+                    
                     <button type="submit" class="submit-button">
                         <i class="fas fa-user-plus"></i> Registrar Participante
                     </button>
@@ -129,12 +160,7 @@
         </section>
     </main>
 
-    <footer>
-        <div class="footer-content">
-            <div class="footer-logo">DRACU<span>TRIATLÓN</span></div>
-            <p>© 2025 DRACUTRIATLON. Todos los derechos reservados.</p>
-        </div>
-    </footer>
+    
 
     <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -145,11 +171,20 @@
                         Por favor, asegúrate de que todos los participantes estén registrados y listos para comenzar.
                     </figcaption>
                 </div>
+                <div class="form-check" style="margin-left: 20px;font-weight: 600;">
+                    <input class="form-check-input my-1" type="checkbox" value="" id="participant_todos">
+                    <label class="form-check-label">
+                        Seleccionar todos los participantes
+                    </label>
+                </div>
                 <div class="modal-body" id="chack_participantes">
                     
-                </p>
                 </div>
                 <div class="modal-footer">
+                    <div class="mb-3">
+                        <label for="start-time" class="form-label">Hora de Inicio (HH:MM:SS)</label>
+                        <input type="text" class="form-control" id="start-time" value="08:00:00" required>
+                    </div>
                     <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Cancelar</button>
                     <button id="start-event" type="button" class="btn btn-danger" data-bs-dismiss="modal">Iniciar Evento</button>
                 </div>
